@@ -69,23 +69,7 @@ namespace MediaTek86.DAL
             return ListEmployee;
         }
 
-        /// <summary>
-        /// Get the maximum employee ID from the employee in the database
-        /// </summary>
-        /// <returns>integer (maximum ID of the employee) in the table EMPLOYEE</returns>
-        public static int GetMaxEmployeeID()
-        {
-            string req = "select max(id) from personnel";
-            ConnexionInstance cursor = ConnexionInstance.GetInstance(connexionString);
-            cursor.ReqSelect(req, null);
-            int max = 0;
-            if (cursor.Read())
-            {
-                max = (int)cursor.Field("max(id)");
-            }
-            cursor.Close();
-            return max;
-        }
+        
 
         /// <summary>
         /// Add an employee to the database
@@ -151,7 +135,7 @@ namespace MediaTek86.DAL
         /// Remove employee from the table EMPLOYEE
         /// </summary>
         /// <param name="employee">Employee (object) from the data selected by user</param>
-        public static void RemoveEmployeeFromEmployee(Employee employee)
+        public static void DeleteEmployee(Employee employee)
         {
             string req = "delete from personnel where idpersonnel = @idpersonnelPersonnel;";
             Dictionary<string, object> parameters = new Dictionary<string, object>
@@ -166,7 +150,7 @@ namespace MediaTek86.DAL
         /// Get the list of departments stored in the database
         /// </summary>
         /// <returns>List of departments</returns>
-        public static List<Department> GetTheDepartments()
+        public static List<Department> GetAllDepartments()
         {
             List<Department> theDepartments = new List<Department>();
             string req = "select * from service order by nom;";
@@ -187,13 +171,12 @@ namespace MediaTek86.DAL
         /// </summary>
         /// <param name="employee">Employee (object) from the data selected by user</param>
         /// <returns>List of absences from an employee</returns>
-        public static List<Absence> GetTheAbsences(Employee employee)
+        public static List<Absence> GetAllAbsences(Employee employee)
         {
             List<Absence> theAbsences = new List<Absence>();
             string req = "select a.idpersonnel as idpersonnel, a.datedebut as datedebut, m.idmotif as idmotif, a.datefin as datefin, m.libelle as libelle ";
             req += "from absence a join motif m using (idmotif) ";
-            req += "where a.idpersonnel = @idpersonnel ";
-            req += "order by datedebut DESC";
+            req += "where a.idpersonnel = @idpersonnel order by datedebut DESC";
             Dictionary<string, object> parameters = new Dictionary<string, object>
             {
                 {"@idpersonnel", employee.IdEmployee}
@@ -215,10 +198,10 @@ namespace MediaTek86.DAL
         }
 
         /// <summary>
-        /// Get the list of absence reasons stored in the database
+        /// Get the list of absence reasons 
         /// </summary>
-        /// <returns>List of absence reasons</returns>
-        public static List<Reason> GetTheReasons()
+        /// <returns>List of reasons</returns>
+        public static List<Reason> GetAllReasons()
         {
             List<Reason> theReasons = new List<Reason>();
             string req = "select * from motif ";
@@ -292,7 +275,7 @@ namespace MediaTek86.DAL
         /// </summary>
         /// <param name="absence">Absence (object) selected from an employee</param>
         /// <param name="employee">Employee (object) selected by a user</param>
-        public static void RemoveAbsenceFromEmployee(Absence absence, Employee employee)
+        public static void DeleteAbsence(Absence absence, Employee employee)
         {
             string req = "delete from absence ";
             req += "where idpersonnel = @idpersonnel ";
