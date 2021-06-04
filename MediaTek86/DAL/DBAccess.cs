@@ -18,7 +18,7 @@ namespace MediaTek86.DAL
         /// <param name="login">login of the connexion</param>
         /// <param name="password">password of the connexion</param>
         /// <returns>true if the connexion is open, false otherwise</returns>
-        public static Boolean ControlAuthentification(string login, string password)
+        public static Boolean PerformLogin(string login, string password)
         {
             string req = "select * from responsable ";
             req += "where login=@login and pwd=SHA2(@pwd, 256);";
