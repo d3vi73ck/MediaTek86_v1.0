@@ -349,44 +349,5 @@ namespace MediaTek86.DAL
             return firstDayNextAbsence;
         }
 
-        /// <summary>
-        /// Get the last day of the previous absence - timeslot in between absences
-        /// </summary>
-        /// <param name="employee">Employee (object) from the data selected by user</param>
-        /// <param name="firstDay">first day selected by user</param>
-        /// <returns>last day of the previous absence</returns>
-        public static DateTime FirstDayIsAfterPreviousAbsence(Employee employee,
-                                                              DateTime firstDay
-                                                              )
-        {
-            DateTime lastDayPreviousAbsence = new DateTime();
-            string req = "SELECT MAX(datefin) ";
-            req += "FROM absence ";
-            req += "WHERE idpersonnel = @idpersonnel ";
-            req += "AND datefin < ( ";
-            req += "SELECT MIN(datedebut) ";
-            req += "FROM absence ";
-            req += "WHERE idpersonnel = @idpersonnel ";
-            req += "AND datedebut > @firstDayPicked)";
-
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>
-            {
-                {"@idpersonnel", employee.IdEmployee},
-                {"@firstDayPicked", firstDay}
-            };
-
-            ConnexionInstance cursor = ConnexionInstance.GetInstance(connexionString);
-            cursor.ReqSelect(req, parameters);
-            while (cursor.Read())
-            {
-                lastDayPreviousAbsence = (DateTime)cursor.Field("max(datefin)");
-
-            }
-            cursor.Close();
-            return lastDayPreviousAbsence;
-
-        }
-
     }
 }
